@@ -18,7 +18,7 @@ export class AuthService {
     if (!await argon.verify(user.password, dto.password)) throw new UnauthorizedException('Invalid password')
     const { password, ...result } = user
     const token = await this.jwt.signAsync({ id: user.id }, { secret: this.config.get(CONSTANTS.JWT_SECRET) })
-    res.cookie(CONSTANTS.COOKIE_NAME, token)
+    res.cookie(CONSTANTS.COOKIE_NAME, token, { maxAge: 900000, httpOnly: true })
     return result
   }
 
