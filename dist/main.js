@@ -6,7 +6,7 @@ const common_1 = require("@nestjs/common");
 const common_2 = require("./common");
 const cookieParser = require("cookie-parser");
 async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, { cors: { credentials: true, origin: true } });
     app.useGlobalPipes(new common_1.ValidationPipe({ whitelist: true }));
     app.useGlobalFilters(new common_2.HttpExceptionFilter());
     app.useGlobalInterceptors(new common_2.TransformInterceptor());

@@ -4,6 +4,6 @@ import { Response } from 'express';
 export declare class AuthController {
     private authService;
     constructor(authService: AuthService);
-    login(dto: AuthDto, res: Response): Promise<Omit<import("../knex/types").User, "password">>;
+    login(dto: AuthDto, res: Response): Promise<string>;
     register(dto: AuthDto): Promise<boolean>;
 }

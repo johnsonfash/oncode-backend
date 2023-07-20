@@ -28,10 +28,7 @@ let AuthService = exports.AuthService = class AuthService {
             throw new common_1.NotFoundException('User not found');
         if (!await argon.verify(user.password, dto.password))
             throw new common_1.UnauthorizedException('Invalid password');
-        const { password, ...result } = user;
-        const token = await this.jwt.signAsync({ id: user.id }, { secret: this.config.get(common_2.CONSTANTS.JWT_SECRET) });
-        res.cookie(common_2.CONSTANTS.COOKIE_NAME, token);
-        return result;
+        return await this.jwt.signAsync({ id: user.id }, { secret: this.config.get(common_2.CONSTANTS.JWT_SECRET) });
     }
     async register(dto) {
         const hash = await argon.hash(dto.password);

@@ -21,17 +21,22 @@ let AuthGuard = exports.AuthGuard = class AuthGuard {
     }
     async canActivate(context) {
         const request = context.switchToHttp().getRequest();
-        const cookie = request.cookies[common_2.CONSTANTS.COOKIE_NAME];
-        if (!cookie)
+        console.log(request.headers.authorization);
+        const token = this.extractTokenFromHeader(request);
+        if (!token)
             throw new common_1.UnauthorizedException();
         try {
-            const payload = await this.jwt.verifyAsync(cookie, { secret: this.config.get(common_2.CONSTANTS.JWT_SECRET) });
+            const payload = await this.jwt.verifyAsync(token, { secret: this.config.get(common_2.CONSTANTS.JWT_SECRET) });
             request['user'] = payload;
         }
         catch {
             throw new common_1.UnauthorizedException();
         }
         return true;
+    }
+    extractTokenFromHeader(request) {
+        const [type, token] = request.headers.authorization?.split(' ') ?? [];
+        return type?.trim() === 'Bearer' ? token?.trim() : undefined;
     }
 };
 exports.AuthGuard = AuthGuard = __decorate([
