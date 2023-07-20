@@ -11,19 +11,11 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {
   constructor(private knex: KnexService, private jwt: JwtService, private config: ConfigService) { }
-
-  async login(dto: AuthDto, res: Response): Promise<Omit<User, 'password'>> {
+  async login(dto: AuthDto, res: Response): Promise<string> {
     const user = await this.knex.table('Users').where('email', dto.email).first();
     if (!user) throw new NotFoundException('User not found')
     if (!await argon.verify(user.password, dto.password)) throw new UnauthorizedException('Invalid password')
-    const { password, ...result } = user
-    const token = await this.jwt.signAsync({ id: user.id }, { secret: this.config.get(CONSTANTS.JWT_SECRET) })
-    res.header('Access-Control-Allow-Credentials', "true");
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
-    res.cookie(CONSTANTS.COOKIE_NAME, token, { expires: new Date(Date.now() + 54000000), domain: 'localhost:3000', sameSite: 'none', secure: true, httpOnly: true });
-    // res.cookie(CONSTANTS.COOKIE_NAME, token, { expires: new Date(Date.now() + 54000000), httpOnly: true, sameSite: 'none', secure: true });
-    return result
+    return await this.jwt.signAsync({ id: user.id }, { secret: this.config.get(CONSTANTS.JWT_SECRET) })
   }
 
   async register(dto: AuthDto): Promise<boolean> {
