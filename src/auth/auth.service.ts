@@ -21,7 +21,7 @@ export class AuthService {
     res.header('Access-Control-Allow-Credentials', "true");
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
-    res.cookie(CONSTANTS.COOKIE_NAME, token, { expires: new Date(Date.now() + 54000000), domain:'localhost'});
+    res.cookie(CONSTANTS.COOKIE_NAME, token, { expires: new Date(Date.now() + 54000000), domain: 'localhost:3000', sameSite: 'none', secure: true, httpOnly: true });
     // res.cookie(CONSTANTS.COOKIE_NAME, token, { expires: new Date(Date.now() + 54000000), httpOnly: true, sameSite: 'none', secure: true });
     return result
   }
